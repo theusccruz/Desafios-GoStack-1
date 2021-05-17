@@ -1,8 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const { v4: uuid, validate: isUuid } = require('uuid');
-
 const app = express();
+
+app.use(cors());
+app.use(express.json());
 
 const log = (request, response, next) => {
   const { method, url } = request;
@@ -11,6 +13,7 @@ const log = (request, response, next) => {
   console.log(logRequest);
   return next();
 }
+app.use(log);
 
 const validateId = (request, response, next) => {
   const { id } = request.params;
@@ -22,11 +25,7 @@ const validateId = (request, response, next) => {
   }
   return next();
 }
-
-app.use(log);
 app.use('/repositories/:id', validateId);
-app.use(express.json());
-app.use(cors());
 
 const repositories = [];
 
